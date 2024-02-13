@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+
+  # TO BE IMPLEMENTED
+  order-service:
+    image: umaparvathi/order_service_application:latest
+    environment:
+      DB_USER: umaparvathi
+      DB_PASSWORD: Uma@1838
+      DB_NAME: order_details
+      DB_HOST: database
+      RABBITMQ_DEFAULT_USER: hellofresh
+      RABBITMQ_DEFAULT_PASS: food
+    ports:
+      - "5000:5000"
+    links:
+      - database
+    volumes:
+      - ./order-service:/home/order-service
+
+  # TO BE IMPLEMENTED
+  database:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: order_details
+      MYSQL_USER: umaparvathi
+      MYSQL_PASSWORD: Uma@1838
+      MYSQL_ROOT_PASSWORD: Uma@1838
+    ports:
+      - '3307:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+  product-service:
+    image: rodolpheche/wiremock:2.23.2-alpine
+    command: --verbose
+    volumes:
+      - ./wiremock/product-service/stubs:/home/wiremock
+    ports:
+    - "8081:8080"
+
+  user-service:
+    image: rodolpheche/wiremock:2.23.2-alpine
+    command: --verbose
+    volumes:
+      - ./wiremock/user-service/stubs:/home/wiremock
+    ports:
+    - "8082:8080"
+
+  rabbitmq:
+    image: rabbitmq:3.7.15-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=hellofresh
+      - RABBITMQ_DEFAULT_PASS=food
+    ports:
+      - "5673:5672"
+      - "15673:15672"

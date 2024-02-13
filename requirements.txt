@@ -1,0 +1,8 @@
+flask==2.3.3
+flask_restx==1.2.0
+mysqlclient==2.2.0
+requests
+pika
+waitress
+mock
+pytest
